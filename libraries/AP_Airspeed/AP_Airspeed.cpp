@@ -55,7 +55,7 @@ void AP_Airspeed::calibrate()
         return;
     }
     _source->read_average();
-    for (c = 0; c < 10; c++) {
+    for (c = 0; c < 50; c++) {
         hal.scheduler->delay(100);
         sum += _source->read_average();
     }
