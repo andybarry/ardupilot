@@ -143,6 +143,7 @@ static inline void crc_accumulate(uint8_t data, uint16_t *crcAccum)
 #endif
 
 #define MAVLINK_USE_CONVENIENCE_FUNCTIONS
+//#include "include/mavlink/v1.0/csailrlg/mavlink.h"
 #include "include/mavlink/v1.0/ardupilotmega/mavlink.h"
 
 uint8_t mavlink_check_target(uint8_t sysid, uint8_t compid);

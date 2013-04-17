@@ -156,6 +156,9 @@ public:
     // var_info for holding Parameter information
     static const struct AP_Param::GroupInfo        var_info[];
 
+// HACK HACK HACK
+	void output_armed_force() { output_armed(); }
+
 protected:
 
     // output functions that should be overloaded by child classes

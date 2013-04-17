@@ -26,6 +26,10 @@
 #include <AP_HAL_AVR_SITL.h>
 #include <AP_HAL_Empty.h>
 
+#include <GCS_MAVLink.h>        // MAVLink GCS definitions
+#include "../../../../ArduCopter/defines.h"
+
+
 const AP_HAL::HAL& hal = AP_HAL_BOARD_DRIVER;
 
 #if CONFIG_HAL_BOARD == HAL_BOARD_APM2
@@ -67,7 +71,6 @@ AP_Baro_BMP085_HIL barometer;
  # define MAG_ORIENTATION  AP_COMPASS_COMPONENTS_DOWN_PINS_FORWARD
 #endif
 
-
 static void flash_leds(bool on)
 {
     hal.gpio->write(A_LED_PIN, on ? LED_OFF : LED_ON);
@@ -84,7 +87,7 @@ void setup(void)
 #endif
 
     ins.init(AP_InertialSensor::COLD_START, 
-			 AP_InertialSensor::RATE_100HZ,
+			 AP_InertialSensor::RATE_200HZ,
 			 flash_leds);
     ins.init_accel(flash_leds);
 
@@ -115,7 +118,7 @@ void loop(void)
         return;
     }
     last_t = now;
-
+#if 0
     if (now - last_compass > 100*1000UL &&
         compass.read()) {
         heading = compass.calculate_heading(ahrs.get_dcm_matrix());
@@ -125,14 +128,15 @@ void loop(void)
         g_gps->update();
 #endif
     }
-
+#endif
     ahrs.update();
     counter++;
 
-    if (now - last_print >= 100000 /* 100ms : 10hz */) {
+    //if (now - last_print >= 100000 /* 100ms : 10hz */) {
+    if (now - last_print >= 1 /* 100ms : 10hz */) {
         Vector3f drift  = ahrs.get_gyro_drift();
         hal.console->printf_P(
-                PSTR("r:%4.1f  p:%4.1f y:%4.1f "
+               /* PSTR("r:%4.1f  p:%4.1f y:%4.1f "
                     "drift=(%5.1f %5.1f %5.1f) hdg=%.1f rate=%.1f\n"),
                         ToDeg(ahrs.roll),
                         ToDeg(ahrs.pitch),
@@ -140,6 +144,13 @@ void loop(void)
                         ToDeg(drift.x),
                         ToDeg(drift.y),
                         ToDeg(drift.z),
+                        compass.use_for_yaw() ? ToDeg(heading) : 0.0,
+                        (1.0e6*counter)/(now-last_print)); */
+                  PSTR("r%4.3f  p%4.3f y%4.3f "
+                    "hdg=%.3f rate=%.1f\n"),
+                        (ahrs.roll),
+                        (ahrs.pitch),
+                        (ahrs.yaw),
                         compass.use_for_yaw() ? ToDeg(heading) : 0.0,
                         (1.0e6*counter)/(now-last_print));
         last_print = now;
