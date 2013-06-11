@@ -2,7 +2,7 @@
 
 #define THISFIRMWARE "ArduCopter V2.9.1-dev"
 /*
- * MODIFIED BY ANDREW BARRY <abarry@csail.mit.edu> TO BE JUST A SENSOR PACKAGE
+ * MODIFIED BY ANDREW BARRY <abarry@csail.mit.edu> TO BE JUST A SENSOR PACKAGE test
  * MODIFIED FOR HIGH RATES
  *
  *  ArduCopter Version 2.9
@@ -1184,7 +1184,26 @@ void loop(void)
         // autonomous mode
         multireadUSB(hal.rcin, channels);
     } else {
+        // manual mode
+        
         multiread(hal.rcin, channels);
+        
+        // copy data for the wingerons and props
+        // since the human wants those linked
+        
+        /*
+         * Output channels:
+         *  1: Wingeron R
+         *  2: Elevator
+         *  3: Prop 1
+         *  4: Rudder
+         *  5: Wingeron L
+         *  6: Prop 2
+         *  7:
+         *  8:
+         */
+         channels[4] = channels[0]; // wingerons
+         channels[5] = channels[2]; // prop
     }
     
     // write servo outputs
