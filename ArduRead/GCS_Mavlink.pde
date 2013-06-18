@@ -434,6 +434,24 @@ static void NOINLINE send_radio_out(mavlink_channel_t chan)
         motors.motor_out[AP_MOTORS_MOT_8]);
 }
 
+static void NOINLINE send_custom_servo_outputs(mavlink_channel_t chan, uint16_t *channels)
+{
+    // uint16_t channels[8] is what is passed in
+    
+    mavlink_msg_servo_output_raw_send(
+        chan,
+        micros(),
+        0, // port
+        channels[0],
+        channels[1],
+        channels[2],
+        channels[3],
+        channels[4],
+        channels[5],
+        channels[6],
+        channels[7]);
+}
+
 static void NOINLINE send_vfr_hud(mavlink_channel_t chan)
 {
     mavlink_msg_vfr_hud_send(
@@ -1142,6 +1160,12 @@ GCS_MAVLINK::send_message_imu_force()
 {
     //send_attitude(chan);
     send_raw_imu1(chan);
+}
+
+void
+GCS_MAVLINK::send_message_servo_outputs_force(uint16_t *channels)
+{
+    send_custom_servo_outputs(chan, channels);
 }
 
 void
@@ -2309,6 +2333,12 @@ static void gcs_send_imu_force()
 {
     gcs0.send_message_imu_force();
 }
+
+static void gcs_send_servo_outputs_force(uint16_t *channels)
+{
+    gcs0.send_message_servo_outputs_force(channels);
+}
+
 
 static void gcs_send_gps_force()
 {

@@ -98,6 +98,7 @@ public:
     void        init(AP_HAL::UARTDriver *port);
     void        send_message(enum ap_message id);
     void        send_message_imu_force();
+    void        send_message_servo_outputs_force(uint16_t *channels);
     void        send_message_gps_force();
     void        send_message_battery_status_force();
     void        send_message_baro_airspeed_force(float airspeed_val);

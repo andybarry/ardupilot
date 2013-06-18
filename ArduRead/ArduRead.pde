@@ -1179,7 +1179,10 @@ void loop(void)
     
     // set servos
     // if channel 5 is flippped, go to autonomous (USB) mode
-    if (hal.rcin->readNoOverrides(4) > 1450) 
+    // default failsafe is about 1500, so use normal mode
+    // if we are in a failsafe condition to inherit the receiver's
+    // failsafe configuration
+    if (hal.rcin->readNoOverrides(4) > 1650) 
     {
         // autonomous mode
         multireadUSB(hal.rcin, channels);
@@ -1202,12 +1205,35 @@ void loop(void)
          *  7:
          *  8:
          */
-         channels[4] = channels[0]; // wingerons
-         channels[5] = channels[2]; // prop
+         
+         channels[4] = channels[0]; // match wingerons
+         
+         // in manual mode, downgain the wingerons
+         channels[0] = int(channels[0] - 1450) / 3 + 1450;
+         channels[4] = int(channels[4] - 1450) / 3 + 1450;
+         
+        //add flaps
+        channels[0] = channels[0] + int(channels[5]-1300)/5; // add flaps from channel 6 -- 1070 is approx. zero
+        channels[4] = channels[4] - int(channels[5]-1300)/5; // add flaps from channel 6
+
+        channels[5] = channels[2]; // match the two props
+    }
+    
+    // min/max servo values
+    for (int i=0; i<8; i++)
+    {
+        if (channels[i] > 1870)
+        {
+            channels[i] = 1870;
+        } else if (channels[i] < 950) {
+            channels[i] = 950;
+        }
     }
     
     // write servo outputs
     multiwrite(hal.rcout, channels);
+    
+    gcs_send_servo_outputs_force(channels);
     
 	
     // read IMU data
