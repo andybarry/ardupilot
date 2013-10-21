@@ -2,7 +2,7 @@
 
 #define THISFIRMWARE "ArduCopter V2.9.1-dev"
 /*
- * MODIFIED BY ANDREW BARRY <abarry@csail.mit.edu> TO BE JUST A SENSOR PACKAGE test
+ * MODIFIED BY ANDREW BARRY <abarry@csail.mit.edu> TO BE JUST A SENSOR PACKAGE
  * MODIFIED FOR HIGH RATES
  *
  *  ArduCopter Version 2.9
@@ -1182,7 +1182,7 @@ void loop(void)
     // default failsafe is about 1500, so use normal mode
     // if we are in a failsafe condition to inherit the receiver's
     // failsafe configuration
-    if (hal.rcin->readNoOverrides(4) > 1650) 
+    if (hal.rcin->readNoOverrides(4) > 1500) 
     {
         // autonomous mode
         multireadUSB(hal.rcin, channels);
@@ -1191,42 +1191,38 @@ void loop(void)
         
         multiread(hal.rcin, channels);
         
-        // copy data for the wingerons and props
-        // since the human wants those linked
-        
         /*
          * Output channels:
-         *  1: Wingeron R
-         *  2: Elevator
-         *  3: Prop 1
-         *  4: Rudder
-         *  5: Wingeron L
-         *  6: Prop 2
+         *  1: Elevon ?
+         *  2: Elevon ?
+         *  3: Throttle
+         *  4:
+         *  5:
+         *  6:
          *  7:
          *  8:
          */
          
-         channels[4] = channels[0]; // match wingerons
+         //channels[4] = channels[0]; // match wingerons
          
          // in manual mode, downgain the wingerons
-         channels[0] = int(channels[0] - 1450) / 3 + 1450;
-         channels[4] = int(channels[4] - 1450) / 3 + 1450;
+         //channels[0] = int(channels[0] - 1450) / 3 + 1450;
+         //channels[4] = int(channels[4] - 1450) / 3 + 1450;
          
         //add flaps
-        channels[0] = channels[0] + int(channels[5]-1300)/5; // add flaps from channel 6 -- 1070 is approx. zero
-        channels[4] = channels[4] - int(channels[5]-1300)/5; // add flaps from channel 6
+        //channels[0] = channels[0] + int(channels[5]-1300)/5; // add flaps from channel 6 -- 1070 is approx. zero
+        //channels[4] = channels[4] - int(channels[5]-1300)/5; // add flaps from channel 6
 
-        channels[5] = channels[2]; // match the two props
     }
     
     // min/max servo values
     for (int i=0; i<8; i++)
     {
-        if (channels[i] > 1870)
+        if (channels[i] > 2099)
         {
-            channels[i] = 1870;
-        } else if (channels[i] < 950) {
-            channels[i] = 950;
+            channels[i] = 2099;
+        } else if (channels[i] < 900) {
+            channels[i] = 900;
         }
     }
     
