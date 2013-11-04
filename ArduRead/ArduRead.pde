@@ -1182,10 +1182,20 @@ void loop(void)
     // default failsafe is about 1500, so use normal mode
     // if we are in a failsafe condition to inherit the receiver's
     // failsafe configuration
-    if (hal.rcin->readNoOverrides(4) > 1500) 
+    
+    // TODO TODO: DISABLED FOR TESTING (so there isn't
+    // a suicide switch)
+    //uint16_t autonomous_switch = hal.rcin->readNoOverrides(4);
+    
+    uint16_t autonomous_switch = 900;
+    
+    if (autonomous_switch > 1500) 
     {
         // autonomous mode
         multireadUSB(hal.rcin, channels);
+        channels[4] = autonomous_switch; // don't use the USB to set
+                                         // the value of the autonmous
+                                         // mode switch
     } else {
         // manual mode
         
@@ -1193,11 +1203,11 @@ void loop(void)
         
         /*
          * Output channels:
-         *  1: Elevon ?
-         *  2: Elevon ?
+         *  1: Elevon L
+         *  2: Elevon R
          *  3: Throttle
          *  4:
-         *  5:
+         *  5: Autonomous switch
          *  6:
          *  7:
          *  8:
@@ -1218,11 +1228,11 @@ void loop(void)
     // min/max servo values
     for (int i=0; i<8; i++)
     {
-        if (channels[i] > 2099)
+        if (channels[i] > RC_INPUT_MAX_PULSEWIDTH)
         {
-            channels[i] = 2099;
-        } else if (channels[i] < 900) {
-            channels[i] = 900;
+            channels[i] = RC_INPUT_MAX_PULSEWIDTH;
+        } else if (channels[i] < RC_INPUT_MIN_PULSEWIDTH) {
+            channels[i] = RC_INPUT_MIN_PULSEWIDTH;
         }
     }
     
