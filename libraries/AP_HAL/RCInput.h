@@ -31,8 +31,9 @@ public:
 
     /* Read an array of channels, return the valid count */
     virtual uint8_t read(uint16_t* periods, uint8_t len) = 0;
-    virtual uint8_t  readNoOverrides(uint16_t* periods, uint8_t len);
-    virtual uint8_t  readJustOverrides(uint16_t* periods, uint8_t len);
+    virtual uint8_t readJustOverride(uint8_t index);
+    virtual uint8_t readNoOverrides(uint16_t* periods, uint8_t len);
+    virtual uint8_t readJustOverrides(uint16_t* periods, uint8_t len);
 
     /**
      * Overrides: these are really grody and don't belong here but we need

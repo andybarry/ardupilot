@@ -996,6 +996,9 @@ void setup(void)
     
     ///// 
     
+    // setup telemetry port pin
+    hal.gpio->pinMode(AN4, GPIO_OUTPUT);
+    
     // calibrate accelerometers
     ins.init_accel(flash_leds);
     
@@ -1160,6 +1163,14 @@ void loop(void)
         //hal.console->printf("current_amps: %f\n",current_amps1);
         //hal.console->printf("current_total: %f\n",current_total1);
         gcs_send_battery_status_force();
+        
+        // write pin high or low depending on
+        // last USB input
+        if (hal.rcin->readJustOverride(8) > 1500) {
+            hal.gpio->write(AN4, 1); // beep
+        } else {
+            hal.gpio->write(AN4, 0); // no beep
+        }
     }
     
     // 100hz
