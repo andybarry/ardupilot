@@ -998,6 +998,7 @@ void setup(void)
     
     // setup telemetry port pin
     hal.gpio->pinMode(AN4, GPIO_OUTPUT);
+    hal.gpio->write(AN4, 1);
     
     // calibrate accelerometers
     ins.init_accel(flash_leds);
@@ -1166,10 +1167,10 @@ void loop(void)
         
         // write pin high or low depending on
         // last USB input
-        if (hal.rcin->readJustOverride(8) > 1500) {
-            hal.gpio->write(AN4, 1); // beep
+        if (hal.rcin->readJustOverrides(7) > 1500) {
+            hal.gpio->write(AN4, 0); // beep
         } else {
-            hal.gpio->write(AN4, 0); // no beep
+            hal.gpio->write(AN4, 1); // no beep
         }
     }
     
@@ -1197,7 +1198,6 @@ void loop(void)
     // TODO TODO: DISABLED FOR TESTING (so there isn't
     // a suicide switch)
     //uint16_t autonomous_switch = hal.rcin->readNoOverrides(4);
-    
     uint16_t autonomous_switch = 900;
     
     if (autonomous_switch > 1500) 
