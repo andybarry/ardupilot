@@ -75,6 +75,7 @@ class AP_HAL_AVR::APM2RCInput : public AP_HAL::RCInput {
     uint16_t readNoOverrides(uint8_t ch);
     uint8_t  read(uint16_t* periods, uint8_t len);
     uint8_t  readNoOverrides(uint16_t* periods, uint8_t len);
+    uint16_t readJustOverrides(uint8_t ch);
     uint8_t  readJustOverrides(uint16_t* periods, uint8_t len);
     bool set_overrides(int16_t *overrides, uint8_t len);
     bool set_override(uint8_t channel, int16_t override);

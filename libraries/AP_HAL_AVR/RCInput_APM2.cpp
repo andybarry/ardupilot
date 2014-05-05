@@ -140,6 +140,9 @@ uint8_t APM2RCInput::read(uint16_t* periods, uint8_t len) {
     return v;
 }
 
+uint16_t APM2RCInput::readJustOverrides(uint8_t ch) {
+    return _override[ch];
+}
 
 uint8_t APM2RCInput::readNoOverrides(uint16_t* periods, uint8_t len) {
     /* constrain len */
