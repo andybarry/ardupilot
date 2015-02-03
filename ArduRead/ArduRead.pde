@@ -126,7 +126,7 @@
 AP_HAL::BetterStream* cliSerial;
 
 // N.B. we need to keep a static declaration which isn't guarded by macros
-// at the top to cooperate with the prototype mangler. 
+// at the top to cooperate with the prototype mangler.
 
 ////////////////////////////////////////////////////////////////////////////////
 // AP_HAL instance
@@ -975,35 +975,35 @@ void setup(void)
     board_vcc_analog_source = hal.analogin->channel(ANALOG_INPUT_BOARD_VCC);
 
     pitot_analog_source = hal.analogin->channel(CONFIG_PITOT_SOURCE_ANALOG_PIN, CONFIG_PITOT_SCALING);
-    
-     //hal.console->printf("analog_pin = %d\n", CONFIG_PITOT_SOURCE_ANALOG_PIN);  
-     //hal.console->printf("CONFIG_PITOT_SCALING = %f\n", CONFIG_PITOT_SCALING);  
-    
+
+     //hal.console->printf("analog_pin = %d\n", CONFIG_PITOT_SOURCE_ANALOG_PIN);
+     //hal.console->printf("CONFIG_PITOT_SCALING = %f\n", CONFIG_PITOT_SCALING);
+
     //vcc_pin = hal.analogin->channel(ANALOG_INPUT_BOARD_VCC);
 
     //batt_volt_pin = hal.analogin->channel(g.battery_volt_pin);
     //batt_curr_pin = hal.analogin->channel(g.battery_curr_pin);
-    
+
     airspeed.init(pitot_analog_source);
     airspeed.calibrate();
     init_ardupilot();
-    
+
 
     // initialise the main loop scheduler
     scheduler.init(&scheduler_tasks[0], sizeof(scheduler_tasks)/sizeof(scheduler_tasks[0]));
-    
-    
-    
-    ///// 
-    
+
+
+
+    /////
+
     // setup telemetry port pin
     hal.gpio->pinMode(AN4, GPIO_OUTPUT);
     hal.gpio->write(AN4, 1);
-    
+
     // calibrate accelerometers
     ins.init_accel(flash_leds);
-    
-    
+
+
     // enable outputs
     hal.rcout->enable_ch(CH_1);
     hal.rcout->enable_ch(CH_2);
@@ -1013,18 +1013,18 @@ void setup(void)
     hal.rcout->enable_ch(CH_6);
     hal.rcout->enable_ch(CH_7);
     hal.rcout->enable_ch(CH_8);
-    
+
     /* Bottom 4 channels at 400hz (like on a quad) */
     hal.rcout->set_freq(0x0000000F, 400);
     for(int i = 0; i < 12; i++) {
         hal.console->printf_P(PSTR("rcout ch %d has frequency %d\r\n"),
                 i, hal.rcout->get_freq(i));
     }
-     
-     
-    hal.console->printf("g.sysid_this_mav = %d", g.sysid_this_mav);  
+
+
+    hal.console->printf("g.sysid_this_mav = %d", g.sysid_this_mav);
     hal.console->printf("g.sysid_my_gcs = %d", g.sysid_my_gcs);
-          
+
     delay(4000);
 
     #if 0
@@ -1034,7 +1034,7 @@ void setup(void)
     hal.gpio->write(40, HIGH);
 #endif
 
-    ins.init(AP_InertialSensor::COLD_START, 
+    ins.init(AP_InertialSensor::COLD_START,
 			 AP_InertialSensor::RATE_200HZ,
 			 flash_leds);
     ins.init_accel(flash_leds);
@@ -1063,7 +1063,7 @@ static void compass_accumulate(void)
 {
     if (g.compass_enabled) {
         compass.accumulate();
-    }    
+    }
 }
 
 /*
@@ -1082,7 +1082,7 @@ static void perf_update(void)
     if (g.log_bitmask & MASK_LOG_PM)
         Log_Write_Performance();
     if (scheduler.debug()) {
-        cliSerial->printf_P(PSTR("PERF: %u/%u %lu\n"), 
+        cliSerial->printf_P(PSTR("PERF: %u/%u %lu\n"),
                             (unsigned)perf_info_get_num_long_running(),
                             (unsigned)perf_info_get_num_loops(),
                             (unsigned long)perf_info_get_max_time());
@@ -1134,7 +1134,7 @@ void multiwrite(AP_HAL::RCOutput* out, uint16_t* channels) {
 
 // 200hz, defined by the IMU rate
 void loop(void)
-{   
+{
     uint16_t channels[8];
     static uint16_t counter;
     static uint32_t last_t, last_print, last_compass, last_baro_airspeed = 0;
@@ -1146,25 +1146,25 @@ void loop(void)
         return;
     }
     last_t = now;
-    
+
     // 10 hz
     if (now - last_compass > 100*1000UL &&
         compass.read()) {
         heading = compass.calculate_heading(ahrs.get_dcm_matrix());
         // read compass at 10Hz
         last_compass = now;
-        
+
         update_GPS();
         gcs_send_gps_force();
-        
+
         read_battery();
-        
+
         // debug: print battery
         //hal.console->printf("battery voltage: %f\n", battery_voltage1);
         //hal.console->printf("current_amps: %f\n",current_amps1);
         //hal.console->printf("current_total: %f\n",current_total1);
         gcs_send_battery_status_force();
-        
+
         // write pin high or low depending on
         // last USB input
         if (hal.rcin->readJustOverrides(7) > 1500) {
@@ -1173,7 +1173,7 @@ void loop(void)
             hal.gpio->write(AN4, 1); // no beep
         }
     }
-    
+
     // 100hz
     if (now - last_baro_airspeed > 10*1000UL) {
         heading = compass.calculate_heading(ahrs.get_dcm_matrix());
@@ -1182,25 +1182,25 @@ void loop(void)
         airspeed.read();
         gcs_send_baro_airspeed_force(airspeed.get_airspeed());
     }
-    
+
 
     // read USB inputs
     gcs_check_input();
-    
+
     // read radio switch for autonomous mode
-    
+
     // set servos
     // if channel 5 is flippped, go to autonomous (USB) mode
     // default failsafe is about 1500, so use normal mode
     // if we are in a failsafe condition to inherit the receiver's
     // failsafe configuration
-    
-    // TODO TODO: DISABLED FOR TESTING (so there isn't
-    // a suicide switch)
-    //uint16_t autonomous_switch = hal.rcin->readNoOverrides(4);
-    uint16_t autonomous_switch = 900;
-    
-    if (autonomous_switch > 1500) 
+
+    uint16_t autonomous_switch = hal.rcin->readNoOverrides(4);
+
+    // uncomment the next line to disable autonomous switch
+    //uint16_t autonomous_switch = 900;
+
+    if (autonomous_switch > 1500)
     {
         // autonomous mode
         multireadUSB(hal.rcin, channels);
@@ -1209,9 +1209,9 @@ void loop(void)
                                          // mode switch
     } else {
         // manual mode
-        
+
         multiread(hal.rcin, channels);
-        
+
         /*
          * Output channels:
          *  1: Elevon L
@@ -1223,19 +1223,19 @@ void loop(void)
          *  7:
          *  8:
          */
-         
+
          //channels[4] = channels[0]; // match wingerons
-         
+
          // in manual mode, downgain the wingerons
          //channels[0] = int(channels[0] - 1450) / 3 + 1450;
          //channels[4] = int(channels[4] - 1450) / 3 + 1450;
-         
+
         //add flaps
         //channels[0] = channels[0] + int(channels[5]-1300)/5; // add flaps from channel 6 -- 1070 is approx. zero
         //channels[4] = channels[4] - int(channels[5]-1300)/5; // add flaps from channel 6
 
     }
-    
+
     // min/max servo values
     for (int i=0; i<8; i++)
     {
@@ -1246,20 +1246,20 @@ void loop(void)
             channels[i] = RC_INPUT_MIN_PULSEWIDTH;
         }
     }
-    
+
     // write servo outputs
     multiwrite(hal.rcout, channels);
-    
+
     gcs_send_servo_outputs_force(channels);
-    
-	
+
+
     // read IMU data
     read_AHRS();
     counter++;
 
     // send IMU data
     gcs_send_imu_force();
-    
+
 }
 
 
