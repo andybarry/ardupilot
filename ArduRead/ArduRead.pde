@@ -1196,6 +1196,7 @@ void loop(void)
     // failsafe configuration
 
     uint16_t autonomous_switch = hal.rcin->readNoOverrides(4);
+    uint16_t traj_switch = hal.rcin->readNoOverrides(5);
 
     // uncomment the next line to disable autonomous switch
     //uint16_t autonomous_switch = 900;
@@ -1206,6 +1207,10 @@ void loop(void)
         multireadUSB(hal.rcin, channels);
         channels[4] = autonomous_switch; // don't use the USB to set
                                          // the value of the autonmous
+                                         // mode switch
+
+        channels[5] = traj_switch; // don't use the USB to set
+                                         // the value of the trajectory
                                          // mode switch
     } else {
         // manual mode
@@ -1219,7 +1224,7 @@ void loop(void)
          *  3: Throttle
          *  4:
          *  5: Autonomous switch
-         *  6:
+         *  6: Trajectory selection switch
          *  7:
          *  8:
          */
