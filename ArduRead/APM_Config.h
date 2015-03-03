@@ -69,7 +69,7 @@
 #define HIGH_DISCHARGE                  1600
 #define BATTERY_CURR_PIN                   12
 #define BATTERY_VOLT_PIN                   13
-#define INPUT_VOLTAGE                   5.3
+#define INPUT_VOLTAGE                   5.23
 #define CURR_AMP_PER_VOLT       18.0018
 #define VOLT_DIV_RATIO          9.92
 #define CONFIG_PITOT_SOURCE PITOT_SOURCE_ANALOG_PIN
