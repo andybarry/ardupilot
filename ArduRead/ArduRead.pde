@@ -1201,7 +1201,7 @@ void loop(void)
     // uncomment the next line to disable autonomous switch
     //uint16_t autonomous_switch = 900;
 
-    if (autonomous_switch > 1500)
+    if (autonomous_switch > 1300)
     {
         // autonomous mode
         multireadUSB(hal.rcin, channels);
