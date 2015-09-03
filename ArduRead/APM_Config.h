@@ -75,5 +75,6 @@
 #define CONFIG_PITOT_SOURCE PITOT_SOURCE_ANALOG_PIN
 #define CONFIG_PITOT_SOURCE_ANALOG_PIN 0
 #define CONFIG_PITOT_SCALING 4.0
+#define MANUAL_LEVEL 0
 
 // -------------- ------------

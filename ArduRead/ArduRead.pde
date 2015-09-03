@@ -1000,8 +1000,9 @@ void setup(void)
     hal.gpio->pinMode(AN4, GPIO_OUTPUT);
     hal.gpio->write(AN4, 1);
 
-    // calibrate accelerometers
-    ins.init_accel(flash_leds);
+    // uncomment to calibrate (level) accelerometers
+    // on every boot
+    //ins.init_accel(flash_leds);
 
 
     // enable outputs
